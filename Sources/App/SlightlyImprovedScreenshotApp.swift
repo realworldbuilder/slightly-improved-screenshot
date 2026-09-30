@@ -3,12 +3,11 @@ import SwiftUI
 @main
 struct SlightlyImprovedScreenshotApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-    @State private var state = AppState()
+    private let state = AppState.shared
 
     var body: some Scene {
         MenuBarExtra {
             MenuContent(state: state)
-                .onAppear { delegate.state = state }
         } label: {
             Image(systemName: state.statusSymbol)
         }

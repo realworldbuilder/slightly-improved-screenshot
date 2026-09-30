@@ -3,6 +3,8 @@ import Observation
 
 @Observable
 final class AppState {
+    static let shared = AppState()
+
     let store = PresetStore()
 
     var selectedPreset: Preset {
@@ -72,17 +74,22 @@ final class AppState {
         defer { isCapturing = false }
 
         refreshPermission()
-        guard hasScreenRecordingAccess else {
+        if !hasScreenRecordingAccess {
             ScreenCapturePermission.request()
             refreshPermission()
-            if !hasScreenRecordingAccess {
+            guard hasScreenRecordingAccess else {
+                NSLog("Capture aborted: Screen Recording access not granted")
                 presentError(CaptureError.permissionDenied)
                 return
             }
-            return
         }
 
-        guard let geometry = await overlay.run(preset: selectedPreset, policy: fitPolicy) else { return }
+        NSLog("Capture session started: \(selectedPreset.rawValue), policy \(fitPolicy.rawValue)")
+        guard let geometry = await overlay.run(preset: selectedPreset, policy: fitPolicy) else {
+            NSLog("Capture session cancelled")
+            return
+        }
+        NSLog("Frame chosen: \(geometry.pointRect) on display \(geometry.screen.displayID), capture \(geometry.capturePixels), scale \(geometry.frameScale)")
 
         // Hide the overlay and let the window server composite a frame without it.
         overlay.hideWindows()
@@ -120,8 +127,10 @@ final class AppState {
                 try OutputService.write(png: png, to: url)
                 lastFileURL = url
             }
+            NSLog("Capture finished: \(image.width)x\(image.height), file \(lastFileURL?.lastPathComponent ?? "none")")
             showFeedback("checkmark.circle")
         } catch {
+            NSLog("Capture failed: \(error)")
             overlay.tearDown()
             presentError(error)
         }

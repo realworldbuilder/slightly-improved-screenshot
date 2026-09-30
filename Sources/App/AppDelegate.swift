@@ -1,20 +1,18 @@
 import AppKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    var state: AppState?
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        HotkeyManager.install { [weak self] in
-            self?.state?.startCapture()
+        HotkeyManager.install {
+            AppState.shared.startCapture()
         }
         if !ScreenCapturePermission.preflight() {
             ScreenCapturePermission.request()
         }
-        state?.refreshPermission()
+        AppState.shared.refreshPermission()
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {
-        state?.refreshPermission()
+        AppState.shared.refreshPermission()
     }
 }
