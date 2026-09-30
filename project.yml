@@ -1,0 +1,78 @@
+name: SlightlyImprovedScreenshot
+options:
+  bundleIdPrefix: com.williamhussey
+  deploymentTarget:
+    macOS: "26.0"
+  xcodeVersion: "26.3"
+  createIntermediateGroups: true
+packages:
+  KeyboardShortcuts:
+    url: https://github.com/sindresorhus/KeyboardShortcuts
+    from: 1.10.0
+targets:
+  SlightlyImprovedScreenshot:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+        excludes: ["**/.DS_Store"]
+    dependencies:
+      - package: KeyboardShortcuts
+      - sdk: ScreenCaptureKit.framework
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleName: Slightly Improved Screenshot
+        CFBundleDisplayName: Slightly Improved Screenshot
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSMinimumSystemVersion: "26.0"
+        LSUIElement: true
+        NSHighResolutionCapable: true
+        LSApplicationCategoryType: public.app-category.utilities
+        NSHumanReadableCopyright: "© 2026 William Hussey"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.williamhussey.SlightlyImprovedScreenshot
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        SWIFT_APPROACHABLE_CONCURRENCY: YES
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: NO
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: R2C4T4N7US
+        CODE_SIGN_IDENTITY: "Apple Development"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        COMBINE_HIDPI_IMAGES: YES
+  SlightlyImprovedScreenshotTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: SlightlyImprovedScreenshot
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        DEVELOPMENT_TEAM: R2C4T4N7US
+        CODE_SIGN_IDENTITY: "Apple Development"
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  SlightlyImprovedScreenshot:
+    build:
+      targets:
+        SlightlyImprovedScreenshot: all
+        SlightlyImprovedScreenshotTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - SlightlyImprovedScreenshotTests
+    archive:
+      config: Release
