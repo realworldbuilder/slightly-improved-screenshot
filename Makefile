@@ -4,7 +4,7 @@ BUNDLE   := com.williamhussey.$(APP)
 DERIVED  := build
 DEST     := $(HOME)/Applications
 
-.PHONY: gen build test install run clean reset-tcc
+.PHONY: gen build test stop install run clean reset-tcc
 
 gen:
 	xcodegen generate
@@ -17,15 +17,18 @@ test: gen
 	xcodebuild -project $(APP).xcodeproj -scheme $(SCHEME) \
 	  -destination 'platform=macOS' -derivedDataPath $(DERIVED) test | tail -40
 
-install: build
+stop:
+	-pkill -x $(APP)
+	while pgrep -x $(APP) >/dev/null; do sleep 0.2; done
+
+install: build stop
 	mkdir -p $(DEST)
 	rm -rf "$(DEST)/$(APP).app"
 	ditto "$(DERIVED)/Build/Products/Release/$(APP).app" "$(DEST)/$(APP).app"
 	codesign --verify --deep --strict "$(DEST)/$(APP).app"
 
 run: install
-	pkill -x $(APP) || true
-	open "$(DEST)/$(APP).app"
+	open "$(DEST)/$(APP).app" || (sleep 2 && open "$(DEST)/$(APP).app")
 
 reset-tcc:
 	tccutil reset ScreenCapture $(BUNDLE)
