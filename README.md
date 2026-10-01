@@ -18,16 +18,26 @@ and saved to `~/Downloads` at the exact pixel size the platform expects.
 
 ## Using it
 
-- **⌃⌥⌘S** (rebindable in Settings) or the menu bar icon starts a capture with the selected preset.
-- Move the mouse to place the frame. **Arrow keys** nudge by 1 px, **Shift + arrows** by 10 px.
-- **Click**, **Return** or **Space** captures. **Esc** or right-click cancels.
-- Output is an opaque sRGB PNG at 72 DPI with exactly the preset's pixel dimensions.
+**⌃⌥⌘S** (rebindable in Settings) or the menu bar icon opens the capture overlay, which
+works like the built-in Screenshot app:
+
+- A floating toolbar at the bottom of the screen has a button for each preset, an
+  **Options** menu (save to Downloads, copy to clipboard, what to do when a size does
+  not fit), and a **Capture** button.
+- The frame is fixed to the preset's size. **Drag** it into place, or click anywhere to
+  bring it there. **Arrow keys** nudge by 1 px, **Shift + arrows** by 10 px.
+- **1 to 6** switch presets from the keyboard.
+- **Capture**, **Return**, or a **double-click** inside the frame takes the shot.
+  **Esc**, the close button, or right-click cancels.
+- The frame reopens where you left it.
+
+Output is an opaque sRGB PNG at 72 DPI with exactly the preset's pixel dimensions.
 
 On a Retina display the frame is drawn at `pixels / scale` points so the capture is
-pixel-for-pixel. When a preset does not fit on the display under the cursor (for
-example a 1080 × 1920 story on a 1080 px tall 1x monitor) the frame is scaled down
-to fit and the capture is upscaled to the exact preset size. The label turns orange
-and shows the scale. Settings can switch this to a strict 1:1 mode instead.
+pixel-for-pixel. When a preset does not fit on the display (for example a 1080 × 1920
+story on a 1080 px tall 1x monitor) the frame is scaled down to fit and the capture is
+upscaled to the exact preset size. The label turns orange and shows the scale.
+Options can switch this to exact pixels only.
 
 ## Requirements
 
@@ -56,7 +66,7 @@ Sources/
   App/        App entry, delegate, AppState (capture pipeline orchestration)
   Model/      Preset and FitPolicy enums, UserDefaults-backed PresetStore
   Hotkey/     KeyboardShortcuts registration
-  Overlay/    FrameGeometry (pure math), OverlayWindow/View/Controller
+  Overlay/    FrameGeometry (pure math), OverlayWindow/View/Controller, CaptureToolbar (SwiftUI)
   Capture/    ScreenCaptureKit capturers (macOS 26 rect API, legacy filter API), permission helpers
   Output/     sRGB normalization, PNG encoding, clipboard and Downloads writing
   Settings/   SwiftUI settings window

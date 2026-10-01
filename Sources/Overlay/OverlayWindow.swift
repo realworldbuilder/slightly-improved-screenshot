@@ -13,7 +13,9 @@ final class OverlayWindow: NSWindow {
         )
         // `contentRect` is in AppKit global coordinates; do not pass `screen:` here.
         super.init(contentRect: screen.frame, styleMask: [.borderless], backing: .buffered, defer: false)
-        level = .screenSaver
+        // Above the menu bar and Dock, but one below pop-up menus so the toolbar's
+        // Options menu can appear on top of the overlay.
+        level = NSWindow.Level(rawValue: NSWindow.Level.popUpMenu.rawValue - 1)
         backgroundColor = .clear
         isOpaque = false
         hasShadow = false
@@ -25,7 +27,9 @@ final class OverlayWindow: NSWindow {
         hidesOnDeactivate = false
         isExcludedFromWindowsMenu = true
         isMovable = false
-        sharingType = .none
+        // Hidden from other apps' captures. `-debugShareOverlay YES` on the command line
+        // makes it visible to `screencapture` for UI checks.
+        sharingType = UserDefaults.standard.bool(forKey: "debugShareOverlay") ? .readOnly : .none
         contentView = overlayView
     }
 

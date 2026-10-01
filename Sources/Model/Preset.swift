@@ -43,6 +43,18 @@ nonisolated enum Preset: String, CaseIterable, Codable, Identifiable, Sendable {
         }
     }
 
+    /// One-word caption for the capture toolbar.
+    var shortName: String {
+        switch self {
+        case .x: "X"
+        case .instagramSquare: "Square"
+        case .instagramPortrait: "Portrait"
+        case .instagramStory: "Story"
+        case .linkedIn: "LinkedIn"
+        case .openGraph: "Link"
+        }
+    }
+
     /// Short token used in file names.
     var fileToken: String {
         switch self {

@@ -85,7 +85,7 @@ final class AppState {
         }
 
         NSLog("Capture session started: \(selectedPreset.rawValue), policy \(fitPolicy.rawValue)")
-        guard let geometry = await overlay.run(preset: selectedPreset, policy: fitPolicy) else {
+        guard let geometry = await overlay.run(state: self) else {
             NSLog("Capture session cancelled")
             return
         }
