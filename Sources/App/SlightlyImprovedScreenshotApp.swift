@@ -9,10 +9,11 @@ struct SlightlyImprovedScreenshotApp: App {
         MenuBarExtra {
             MenuContent(state: state)
         } label: {
-            if state.isRecording {
-                Text(state.recordingElapsedLabel)
+            // One view whose structure never changes, so the status item is not rebuilt mid-recording.
+            HStack(spacing: 4) {
+                Image(systemName: state.statusSymbol)
+                Text(state.isRecording ? state.recordingElapsedLabel : "")
             }
-            Image(systemName: state.statusSymbol)
         }
         .menuBarExtraStyle(.menu)
 
