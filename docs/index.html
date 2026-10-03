@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slightly Improved Screenshot</title>
+<meta name="description" content="A macOS menu bar utility that takes screenshots and screen recordings at the exact pixel sizes social media expects.">
+<style>
+  :root {
+    --bg: #fbfaf8; --fg: #1b1a18; --muted: #6b6862; --line: #e4e1db;
+    --card: #ffffff; --code-bg: #17171a; --code-fg: #f1efe9; --accent: #d9482b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121214; --fg: #efede8; --muted: #9a978f; --line: #2a2a2e;
+      --card: #1a1a1d; --code-bg: #000000; --code-fg: #f1efe9; --accent: #ff6b4a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 72px 20px 56px; }
+  h1 { font-size: clamp(34px, 7vw, 52px); line-height: 1.05; letter-spacing: -0.03em; margin: 0 0 16px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 20px; color: var(--muted); margin: 0 0 36px; max-width: 34em; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 52px 0 14px; font-weight: 600; }
+  .install {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--code-bg); color: var(--code-fg);
+    border-radius: 12px; padding: 14px 14px 14px 18px;
+  }
+  .install code {
+    flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap;
+    font: 14px/1.4 ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .install button {
+    flex: none; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--code-bg); background: var(--code-fg); border: 0; border-radius: 8px; padding: 7px 14px;
+  }
+  .note { font-size: 14px; color: var(--muted); margin: 12px 0 0; }
+  ul { padding: 0; margin: 0; list-style: none; }
+  .features li { padding: 14px 0; border-top: 1px solid var(--line); }
+  .features li:last-child { border-bottom: 1px solid var(--line); }
+  .features strong { display: block; }
+  .features span { color: var(--muted); font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; }
+  td { padding: 9px 0; border-top: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 1px solid var(--line); }
+  td:last-child { text-align: right; color: var(--muted); }
+  kbd {
+    font: 13px ui-monospace, "SF Mono", Menlo, monospace; background: var(--card);
+    border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px;
+  }
+  a { color: inherit; }
+  footer { margin-top: 56px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Screenshot, <em>slightly improved.</em></h1>
+  <p class="lede">A macOS menu bar utility that works like the built-in Screenshot tool, except every screenshot and screen recording comes out at the exact pixel size the platform you are posting to expects.</p>
+
+  <div class="install">
+    <code id="cmd">curl -fsSL https://realworldbuilder.github.io/slightly-improved-screenshot/install.sh | bash</code>
+    <button id="copy" type="button">Copy</button>
+  </div>
+  <p class="note">Paste into Terminal. Requires macOS 26 or later. Installs to Applications and launches; read <a href="install.sh">the script</a> first if you like.</p>
+
+  <h2>What it does</h2>
+  <ul class="features">
+    <li><strong>Fixed-size frames</strong><span>Press <kbd>⇧⌘2</kbd>, drag the frame into place, press Return. The PNG is exactly the preset's size, on the clipboard and in Downloads.</span></li>
+    <li><strong>Video with sound</strong><span>Record the same frame as an H.264 MP4 with system audio, any microphone, or both, mixed into one track that plays everywhere.</span></li>
+    <li><strong>Retina-exact, or scaled to fit</strong><span>Captures are pixel-for-pixel where the preset fits the display, and scaled to the exact size where it does not.</span></li>
+    <li><strong>The options you know</strong><span>Timer, mouse pointer, mouse clicks, clipboard and file output, a rebindable hotkey.</span></li>
+  </ul>
+
+  <h2>Presets</h2>
+  <table>
+    <tr><td>X / Twitter</td><td>1600 × 900</td></tr>
+    <tr><td>Instagram Square</td><td>1080 × 1080</td></tr>
+    <tr><td>Instagram Portrait</td><td>1080 × 1350</td></tr>
+    <tr><td>Instagram Story</td><td>1080 × 1920</td></tr>
+    <tr><td>LinkedIn</td><td>1200 × 627</td></tr>
+    <tr><td>Open Graph</td><td>1200 × 630</td></tr>
+  </table>
+
+  <h2>Good to know</h2>
+  <p>The first capture asks for Screen Recording access; grant it in System Settings › Privacy &amp; Security › Screen &amp; System Audio Recording and relaunch. The app is not notarized, so install it with the command above rather than by downloading the zip in a browser. To uninstall, quit it from the menu bar and delete it from Applications.</p>
+
+  <footer><a href="https://github.com/realworldbuilder/slightly-improved-screenshot">Source on GitHub</a></footer>
+</main>
+<script>
+  const button = document.getElementById('copy');
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(document.getElementById('cmd').textContent);
+      button.textContent = 'Copied';
+      setTimeout(() => { button.textContent = 'Copy'; }, 1500);
+    } catch (_) {}
+  });
+</script>
+</body>
+</html>

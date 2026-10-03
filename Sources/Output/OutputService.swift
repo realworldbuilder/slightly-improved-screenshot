@@ -34,18 +34,39 @@ enum OutputService {
 
     /// `~/Downloads/Screenshot <Token> <W>x<H> yyyy-MM-dd at HH.mm.ss.png`, de-duplicated with ` (n)`.
     nonisolated static func downloadsURL(preset: Preset, date: Date = .now, fileManager: FileManager = .default) -> URL {
+        fileURL(kind: "Screenshot", preset: preset, size: preset.pixelSize, pathExtension: "png", date: date, fileManager: fileManager)
+    }
+
+    /// `<directory>/<Kind> <Token> <W>x<H> yyyy-MM-dd at HH.mm.ss.<ext>`, de-duplicated with ` (n)`.
+    /// `directory` defaults to `~/Downloads`.
+    nonisolated static func fileURL(
+        kind: String,
+        preset: Preset,
+        size: CGSize,
+        pathExtension: String,
+        directory: URL? = nil,
+        date: Date = .now,
+        fileManager: FileManager = .default
+    ) -> URL {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd 'at' HH.mm.ss"
-        let base = "Screenshot \(preset.fileToken) \(preset.width)x\(preset.height) \(formatter.string(from: date))"
-        let directory = fileManager.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
-        var url = directory.appendingPathComponent(base).appendingPathExtension("png")
+        let base = "\(kind) \(preset.fileToken) \(Int(size.width))x\(Int(size.height)) \(formatter.string(from: date))"
+        let directory = directory ?? fileManager.urls(for: .downloadsDirectory, in: .userDomainMask)[0]
+        var url = directory.appendingPathComponent(base).appendingPathExtension(pathExtension)
         var n = 2
         while fileManager.fileExists(atPath: url.path) {
-            url = directory.appendingPathComponent("\(base) (\(n))").appendingPathExtension("png")
+            url = directory.appendingPathComponent("\(base) (\(n))").appendingPathExtension(pathExtension)
             n += 1
         }
         return url
+    }
+
+    /// Copies a file reference, so pasting attaches the file itself (used for recordings).
+    static func copyFileToPasteboard(_ url: URL) {
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.writeObjects([url as NSURL])
     }
 
     nonisolated static func write(png: Data, to url: URL) throws {

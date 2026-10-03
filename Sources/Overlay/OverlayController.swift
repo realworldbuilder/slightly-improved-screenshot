@@ -2,8 +2,9 @@ import AppKit
 import SwiftUI
 
 /// Runs one interactive capture session across all displays, in the style of the macOS
-/// Screenshot app: a fixed-size frame the user drags into place, and a floating toolbar
-/// for picking the preset, changing options, and capturing.
+/// Screenshot app: a frame the user drags into place and resizes by its edges and corners
+/// (aspect ratio locked to the preset), and a floating toolbar for picking the preset,
+/// changing options, and capturing.
 ///
 /// Returns the chosen geometry on Capture / Return / double-click, or `nil` on cancel.
 final class OverlayController {
@@ -18,8 +19,19 @@ final class OverlayController {
     private var activeDisplayID: CGDirectDisplayID = 0
     /// Frame center in AppKit global points. Remembered between sessions, like the Screenshot app.
     private var center: CGPoint?
+    /// Scale the user wants, `1` = pixel-exact. Remembered between sessions; clamped per display.
+    private var frameScale: CGFloat = 1
     private var dragOffset: CGPoint = .zero
+    /// Active resize drag: the handle being pulled and the point held fixed.
+    private var resize: (handle: FrameHandle, anchor: CGPoint)?
+    /// Allowed scales on the active display, set by `relayout`. `nil` when the preset cannot fit.
+    private var scaleLimits: ClosedRange<CGFloat>?
     private(set) var geometry: FrameGeometry?
+
+    private var isResizable: Bool {
+        guard let scaleLimits else { return false }
+        return scaleLimits.lowerBound < scaleLimits.upperBound
+    }
 
     /// Window numbers of the overlay windows, for the legacy capture path's exclusion list.
     var windowIDs: Set<CGWindowID> { Set(windows.map { CGWindowID($0.windowNumber) }) }
@@ -108,6 +120,14 @@ final class OverlayController {
         let point = NSEvent.mouseLocation
         guard let window = windowUnder(point) else { return }
         let onActiveDisplay = window.screenInfo.displayID == activeDisplayID
+        resize = nil
+
+        if onActiveDisplay, isResizable, let geometry,
+           let handle = FrameHandle.hit(point, in: geometry.pointRect) {
+            resize = (handle, handle.anchor(in: geometry.pointRect))
+            handle.cursor.set()
+            return
+        }
 
         if onActiveDisplay, let geometry, geometry.pointRect.contains(point), let center {
             if event.clickCount >= 2 {
@@ -128,6 +148,18 @@ final class OverlayController {
 
     private func mouseDragged() {
         let point = NSEvent.mouseLocation
+        if let resize {
+            // Resizing stays on the active display; the anchor never leaves it.
+            guard let state, let screen = activeWindow?.screenInfo, let scaleLimits else { return }
+            let result = FrameGeometry.resize(
+                preset: state.selectedPreset, screen: screen, handle: resize.handle,
+                anchor: resize.anchor, mouse: point, limits: scaleLimits
+            )
+            frameScale = result.scale
+            center = result.center
+            relayout()
+            return
+        }
         if let window = windowUnder(point), window.screenInfo.displayID != activeDisplayID {
             activeDisplayID = window.screenInfo.displayID
             window.makeKey()
@@ -137,6 +169,7 @@ final class OverlayController {
     }
 
     private func mouseUp() {
+        resize = nil
         if let view = activeWindow?.overlayView {
             view.window?.invalidateCursorRects(for: view)
         }
@@ -154,14 +187,29 @@ final class OverlayController {
         case 125: nudge(dx: 0, dy: -step)       // Down
         case 126: nudge(dx: 0, dy: step)        // Up
         default:
-            // 1...6 pick a preset.
-            guard let characters = event.charactersIgnoringModifiers, let number = Int(characters),
-                  Preset.allCases.indices.contains(number - 1)
-            else { return false }
-            state?.selectedPreset = Preset.allCases[number - 1]
-            relayout()
+            guard let characters = event.charactersIgnoringModifiers else { return false }
+            switch characters {
+            case "-", "_": scale(by: -step / 100)
+            case "=", "+": scale(by: step / 100)
+            case "0":
+                frameScale = 1
+                relayout()
+            default:
+                // 1...6 pick a preset.
+                guard let number = Int(characters), Preset.allCases.indices.contains(number - 1) else { return false }
+                state?.selectedPreset = Preset.allCases[number - 1]
+                relayout()
+            }
         }
         return true
+    }
+
+    /// Changes the scale by `delta` around the frame's center, within the display's limits.
+    private func scale(by delta: CGFloat) {
+        guard isResizable, let scaleLimits else { return }
+        let base = geometry?.frameScale ?? frameScale
+        frameScale = min(max(base + delta, scaleLimits.lowerBound), scaleLimits.upperBound)
+        relayout()
     }
 
     private func nudge(dx: CGFloat, dy: CGFloat) {
@@ -219,7 +267,9 @@ final class OverlayController {
             }
 
             let screen = window.screenInfo
-            guard let k = FrameGeometry.fitScale(preset: preset, screen: screen, policy: state.fitPolicy) else {
+            let limits = FrameGeometry.scaleLimits(preset: preset, screen: screen, policy: state.fitPolicy)
+            scaleLimits = limits
+            guard let limits else {
                 geometry = nil
                 session.canCapture = false
                 view.update(hole: nil, text: "", warning: false)
@@ -229,6 +279,8 @@ final class OverlayController {
                 continue
             }
 
+            // Clamp for this display without forgetting the user's chosen scale.
+            let k = min(max(frameScale, limits.lowerBound), limits.upperBound)
             let g = FrameGeometry.make(preset: preset, mouse: center, nudgePx: .zero, screen: screen, frameScale: k)
             geometry = g
             session.canCapture = true
@@ -237,13 +289,14 @@ final class OverlayController {
 
             var text = "\(preset.displayName) · \(preset.dimensionsLabel) px"
             if !g.isPixelExact {
-                text += " · frame \(String(format: "%.2f", k))× (upscaled)"
+                text += " · frame \(String(format: "%.2f", k))× (\(g.isUpscaled ? "upscaled" : "downscaled"))"
             }
             view.showHint(nil)
             view.update(
                 hole: g.pointRect.offsetBy(dx: -screen.frame.minX, dy: -screen.frame.minY),
                 text: text,
-                warning: !g.isPixelExact
+                warning: g.isUpscaled,
+                resizable: limits.lowerBound < limits.upperBound
             )
         }
     }

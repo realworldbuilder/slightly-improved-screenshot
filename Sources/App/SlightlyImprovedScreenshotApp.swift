@@ -9,6 +9,9 @@ struct SlightlyImprovedScreenshotApp: App {
         MenuBarExtra {
             MenuContent(state: state)
         } label: {
+            if state.isRecording {
+                Text(state.recordingElapsedLabel)
+            }
             Image(systemName: state.statusSymbol)
         }
         .menuBarExtraStyle(.menu)
@@ -24,10 +27,16 @@ private struct MenuContent: View {
 
     var body: some View {
         let shortcut = HotkeyManager.captureShortcutDescription
-        Button(shortcut.isEmpty ? "Capture \(state.selectedPreset.displayName)" : "Capture \(state.selectedPreset.displayName)   \(shortcut)") {
-            state.startCapture()
+        if state.isRecording {
+            Button(shortcut.isEmpty ? "Stop Recording" : "Stop Recording   \(shortcut)") {
+                state.stopRecording()
+            }
+        } else {
+            Button(shortcut.isEmpty ? "Capture \(state.selectedPreset.displayName)" : "Capture \(state.selectedPreset.displayName)   \(shortcut)") {
+                state.startCapture()
+            }
+            .disabled(state.isCapturing)
         }
-        .disabled(state.isCapturing)
 
         Divider()
 
@@ -40,7 +49,7 @@ private struct MenuContent: View {
 
         Divider()
 
-        Button("Reveal Last Screenshot") { state.revealLastScreenshot() }
+        Button("Reveal Last Capture") { state.revealLastCapture() }
             .disabled(state.lastFileURL == nil)
 
         if !state.hasScreenRecordingAccess {

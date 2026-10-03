@@ -8,17 +8,128 @@ struct FrameGeometryTests {
     // External 1920x1080 @1x, placed to the left of and above the primary (negative origin).
     let external = ScreenInfo(displayID: 2, frame: CGRect(x: -1920, y: 300, width: 1920, height: 1080), backingScale: 1)
 
-    @Test func fitScaleIsOneWhenPresetFits() {
-        #expect(FrameGeometry.fitScale(preset: .x, screen: laptop, policy: .autoFit) == 1)
-        #expect(FrameGeometry.fitScale(preset: .instagramStory, screen: laptop, policy: .autoFit) == 1)
-        #expect(FrameGeometry.fitScale(preset: .x, screen: external, policy: .exactOnly) == 1)
+    @Test func scaleLimitsReachAboveOneWhenPresetFits() {
+        // 3024x1964 px: 3024 / 1600 = 1.89, 1964 / 900 = 2.18 -> 1.89
+        #expect(FrameGeometry.scaleLimits(preset: .x, screen: laptop, policy: .autoFit) == 0.1...1.89)
+        // 1964 / 1920 = 1.0229 -> 1.02
+        #expect(FrameGeometry.scaleLimits(preset: .instagramStory, screen: laptop, policy: .autoFit) == 0.1...1.02)
+        #expect(FrameGeometry.scaleLimits(preset: .x, screen: external, policy: .exactOnly) == 1...1)
     }
 
-    @Test func fitScaleShrinksTallPresetsOnOneXDisplay() {
+    @Test func scaleLimitsShrinkTallPresetsOnOneXDisplay() {
         // 1080 / 1350 = 0.8, 1080 / 1920 = 0.5625 -> floored to 0.56
-        #expect(FrameGeometry.fitScale(preset: .instagramPortrait, screen: external, policy: .autoFit) == 0.8)
-        #expect(FrameGeometry.fitScale(preset: .instagramStory, screen: external, policy: .autoFit) == 0.56)
-        #expect(FrameGeometry.fitScale(preset: .instagramStory, screen: external, policy: .exactOnly) == nil)
+        #expect(FrameGeometry.scaleLimits(preset: .instagramPortrait, screen: external, policy: .autoFit) == 0.1...0.8)
+        #expect(FrameGeometry.scaleLimits(preset: .instagramStory, screen: external, policy: .autoFit) == 0.1...0.56)
+        #expect(FrameGeometry.scaleLimits(preset: .instagramStory, screen: external, policy: .exactOnly) == nil)
+    }
+
+    @Test func scaleAboveOneDownscales() {
+        let g = FrameGeometry.make(preset: .x, mouse: CGPoint(x: 700, y: 500), nudgePx: .zero, screen: laptop, frameScale: 1.5)
+        #expect(g.capturePixels == CGSize(width: 2400, height: 1350))
+        #expect(g.pointRect.size == CGSize(width: 1200, height: 675))
+        #expect(g.outputPixels == CGSize(width: 1600, height: 900))
+        #expect(!g.isPixelExact)
+        #expect(!g.isUpscaled)
+    }
+
+    // MARK: - Handles
+
+    let rect = CGRect(x: 100, y: 100, width: 800, height: 450)
+
+    @Test func cornerHitWinsOverEdgeAndInteriorMissesHandles() {
+        #expect(FrameHandle.hit(CGPoint(x: 100, y: 550), in: rect, tolerance: 8) == .topLeft)
+        #expect(FrameHandle.hit(CGPoint(x: 905, y: 105), in: rect, tolerance: 8) == .bottomRight)
+        #expect(FrameHandle.hit(CGPoint(x: 894, y: 544), in: rect, tolerance: 8) == .topRight)
+        #expect(FrameHandle.hit(CGPoint(x: 500, y: 550), in: rect, tolerance: 8) == .top)
+        #expect(FrameHandle.hit(CGPoint(x: 500, y: 97), in: rect, tolerance: 8) == .bottom)
+        #expect(FrameHandle.hit(CGPoint(x: 104, y: 300), in: rect, tolerance: 8) == .left)
+        #expect(FrameHandle.hit(CGPoint(x: 907, y: 300), in: rect, tolerance: 8) == .right)
+        #expect(FrameHandle.hit(CGPoint(x: 500, y: 300), in: rect, tolerance: 8) == nil)
+        #expect(FrameHandle.hit(CGPoint(x: 120, y: 120), in: rect, tolerance: 8) == nil)
+        #expect(FrameHandle.hit(CGPoint(x: 950, y: 300), in: rect, tolerance: 8) == nil)
+    }
+
+    @Test func anchorIsOppositeCornerOrEdgeMidpoint() {
+        #expect(FrameHandle.bottomRight.anchor(in: rect) == CGPoint(x: 100, y: 550))
+        #expect(FrameHandle.topLeft.anchor(in: rect) == CGPoint(x: 900, y: 100))
+        #expect(FrameHandle.right.anchor(in: rect) == CGPoint(x: 100, y: 325))
+        #expect(FrameHandle.top.anchor(in: rect) == CGPoint(x: 500, y: 100))
+        #expect(FrameHandle.bottomRight.position(in: rect) == CGPoint(x: 900, y: 100))
+    }
+
+    // MARK: - Resize
+
+    let limits: ClosedRange<CGFloat> = 0.1...1.89
+
+    @Test func cornerResizeKeepsAnchorAndAspectRatio() {
+        // Frame at 1:1 is 800x450 pt; its top-left corner is held while the bottom-right is pulled.
+        let anchor = CGPoint(x: 100, y: 900)
+        let r = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .bottomRight,
+            anchor: anchor, mouse: CGPoint(x: 100 + 400, y: 900 - 225), limits: limits
+        )
+        #expect(abs(r.scale - 0.5) < 0.001)
+        let g = FrameGeometry.make(preset: .x, mouse: r.center, nudgePx: .zero, screen: laptop, frameScale: r.scale)
+        #expect(abs(g.pointRect.minX - anchor.x) <= 0.5)
+        #expect(abs(g.pointRect.maxY - anchor.y) <= 0.5)
+        #expect(abs(g.capturePixels.width / g.capturePixels.height - 16.0 / 9.0) < 0.01)
+
+        // Pulling further out grows the frame; the cursor's off-diagonal component is projected away.
+        let bigger = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .bottomRight,
+            anchor: anchor, mouse: CGPoint(x: 100 + 1000, y: 900 - 100), limits: limits
+        )
+        #expect(bigger.scale > r.scale)
+        #expect(bigger.scale <= limits.upperBound)
+    }
+
+    @Test func edgeResizeStaysCenteredOnOtherAxis() {
+        let anchor = CGPoint(x: 100, y: 500)
+        let r = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .right,
+            anchor: anchor, mouse: CGPoint(x: 100 + 600, y: 777), limits: limits
+        )
+        #expect(abs(r.scale - 0.75) < 0.001)
+        #expect(r.center.y == anchor.y)
+        #expect(abs(r.center.x - (anchor.x + 300)) <= 0.5)
+
+        let top = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .top,
+            anchor: CGPoint(x: 700, y: 100), mouse: CGPoint(x: 0, y: 100 + 225), limits: limits
+        )
+        #expect(abs(top.scale - 0.5) < 0.001)
+        #expect(top.center.x == 700)
+    }
+
+    @Test func resizeIsClampedToLimitsAndScreenRoom() {
+        // Past the anchor: smallest allowed scale.
+        let tiny = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .bottomRight,
+            anchor: CGPoint(x: 100, y: 900), mouse: CGPoint(x: 0, y: 982), limits: limits
+        )
+        #expect(tiny.scale == limits.lowerBound)
+
+        // Past the screen edge: frame ends exactly at the edge, anchor unmoved.
+        let anchor = CGPoint(x: 1000, y: 900)
+        let edge = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .bottomRight,
+            anchor: anchor, mouse: CGPoint(x: 5000, y: -5000), limits: limits
+        )
+        let g = FrameGeometry.make(preset: .x, mouse: edge.center, nudgePx: .zero, screen: laptop, frameScale: edge.scale)
+        #expect(g.pointRect.minX == anchor.x)
+        #expect(g.pointRect.maxY == anchor.y)
+        #expect(g.pointRect.maxX <= laptop.frame.maxX)
+        #expect(g.pointRect.maxX > laptop.frame.maxX - 1)
+
+        // Edge drag near the top: room on the centered axis is twice the distance to the nearer edge.
+        let nearTop = FrameGeometry.resize(
+            preset: .x, screen: laptop, handle: .right,
+            anchor: CGPoint(x: 0, y: 982 - 100), mouse: CGPoint(x: 1500, y: 0), limits: limits
+        )
+        let gTop = FrameGeometry.make(preset: .x, mouse: nearTop.center, nudgePx: .zero, screen: laptop, frameScale: nearTop.scale)
+        #expect(gTop.pointRect.maxY <= laptop.frame.maxY)
+        #expect(gTop.pointRect.height <= 200)
+        #expect(gTop.pointRect.height > 198)
     }
 
     @Test func frameSizeInPointsIsPixelsOverScale() {

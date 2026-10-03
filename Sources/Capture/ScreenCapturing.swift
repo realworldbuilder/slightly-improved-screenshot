@@ -3,6 +3,7 @@ import Foundation
 
 nonisolated enum CaptureError: LocalizedError {
     case permissionDenied
+    case microphoneDenied
     case noImage
     case displayNotFound
     case unexpectedSize(got: CGSize, expected: CGSize)
@@ -11,6 +12,8 @@ nonisolated enum CaptureError: LocalizedError {
         switch self {
         case .permissionDenied:
             "Screen Recording permission is required. Enable it for Slightly Improved Screenshot in System Settings › Privacy & Security › Screen & System Audio Recording."
+        case .microphoneDenied:
+            "Microphone access is required to record the selected microphone. Enable it for Slightly Improved Screenshot in System Settings › Privacy & Security › Microphone, or set Microphone to None in Options."
         case .noImage:
             "The system returned no image."
         case .displayNotFound:

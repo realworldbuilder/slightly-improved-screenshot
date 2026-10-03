@@ -4,7 +4,7 @@ BUNDLE   := com.williamhussey.$(APP)
 DERIVED  := build
 DEST     := $(HOME)/Applications
 
-.PHONY: gen build test stop install run clean reset-tcc
+.PHONY: gen build test stop install run release clean reset-tcc
 
 gen:
 	xcodegen generate
@@ -29,6 +29,15 @@ install: build stop
 
 run: install
 	open "$(DEST)/$(APP).app" || (sleep 2 && open "$(DEST)/$(APP).app")
+
+# Ad-hoc signed zip for GitHub Releases, so it runs on Macs without this team's certificate.
+release: gen
+	xcodebuild -project $(APP).xcodeproj -scheme $(SCHEME) -configuration Release \
+	  -destination 'generic/platform=macOS' -derivedDataPath $(DERIVED)/release \
+	  CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= build | tail -5
+	codesign --verify --deep --strict "$(DERIVED)/release/Build/Products/Release/$(APP).app"
+	ditto -c -k --keepParent "$(DERIVED)/release/Build/Products/Release/$(APP).app" "$(DERIVED)/$(APP).zip"
+	@echo "$(DERIVED)/$(APP).zip"
 
 reset-tcc:
 	tccutil reset ScreenCapture $(BUNDLE)

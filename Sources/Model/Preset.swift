@@ -86,3 +86,11 @@ nonisolated enum FitPolicy: String, CaseIterable, Codable, Identifiable, Sendabl
         }
     }
 }
+
+/// What the Capture button produces.
+nonisolated enum CaptureMode: String, CaseIterable, Codable, Identifiable, Sendable {
+    case photo
+    case video
+
+    var id: String { rawValue }
+}

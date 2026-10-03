@@ -10,6 +10,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ScreenCapturePermission.request()
         }
         AppState.shared.refreshPermission()
+        // `-debugRecordSeconds N` on the command line records for N seconds with no UI.
+        let debugSeconds = UserDefaults.standard.integer(forKey: "debugRecordSeconds")
+        if debugSeconds > 0 {
+            AppState.shared.debugRecord(seconds: debugSeconds)
+        }
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {

@@ -30,5 +30,7 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2026 William Hussey</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Slightly Improved Screenshot records the microphone you pick in Options with your screen recordings.</string>
 </dict>
 </plist>

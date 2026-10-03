@@ -23,7 +23,19 @@ struct SettingsView: View {
 
             Section("Output") {
                 Toggle("Copy to clipboard", isOn: $state.copyToClipboard)
-                Toggle("Save PNG to Downloads", isOn: $state.saveToDownloads)
+                Toggle("Save to Downloads", isOn: $state.saveToDownloads)
+            }
+
+            Section("Recording") {
+                Picker("Microphone", selection: $state.microphoneID) {
+                    Text("None").tag("")
+                    ForEach(Microphone.devices) { device in
+                        Text(device.name).tag(device.id)
+                    }
+                }
+                Toggle("Record system audio", isOn: $state.recordSystemAudio)
+                Toggle("Show mouse pointer", isOn: $state.showPointerInVideos)
+                Toggle("Show mouse clicks", isOn: $state.showMouseClicks)
             }
 
             Section("Permissions") {

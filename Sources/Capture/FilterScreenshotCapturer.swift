@@ -8,8 +8,11 @@ struct FilterScreenshotCapturer: ScreenCapturing {
     /// Window numbers of our own overlay windows, excluded from the capture.
     let excludedWindowIDs: Set<CGWindowID>
 
-    nonisolated init(excludedWindowIDs: Set<CGWindowID>) {
+    let showsCursor: Bool
+
+    nonisolated init(excludedWindowIDs: Set<CGWindowID>, showsCursor: Bool = false) {
         self.excludedWindowIDs = excludedWindowIDs
+        self.showsCursor = showsCursor
     }
 
     nonisolated func capture(_ geometry: FrameGeometry, primaryHeight: CGFloat) async throws -> CGImage {
@@ -29,7 +32,7 @@ struct FilterScreenshotCapturer: ScreenCapturing {
         config.sourceRect = geometry.displayLocalRect
         config.width = Int(geometry.capturePixels.width)
         config.height = Int(geometry.capturePixels.height)
-        config.showsCursor = false
+        config.showsCursor = showsCursor
         config.pixelFormat = kCVPixelFormatType_32BGRA
         config.captureResolution = .best
         config.captureDynamicRange = .SDR
