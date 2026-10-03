@@ -5,6 +5,8 @@ fixed-size frames for social media. Press the hotkey, a frame locked to the chos
 preset follows your mouse, click to capture. The result is copied to the clipboard
 and saved to `~/Downloads` at the exact pixel size the platform expects.
 
+![The capture frame switching between social media sizes, then recording video](docs/demo.svg)
+
 ## Install
 
 ```bash

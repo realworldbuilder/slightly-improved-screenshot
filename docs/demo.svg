@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" font-family="-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif" role="img" aria-label="The capture frame switching between social media sizes, then recording video">
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#27406b"/><stop offset=".55" stop-color="#6b4a8a"/><stop offset="1" stop-color="#d9785a"/></linearGradient>
+  <linearGradient id="chart" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff6b4a"/><stop offset="1" stop-color="#ffb347"/></linearGradient>
+  <mask id="hole"><rect width="960" height="600" fill="#fff"/><rect fill="#000" x="280" y="152" width="400" height="225"><animate attributeName="x" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="280;280;345;345;345;345;280;280;280" /><animate attributeName="y" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="152;152;130;130;22;22;152;152;152" /><animate attributeName="width" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="400;400;270;270;270;270;400;400;400" /><animate attributeName="height" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="225;225;270;270;480;480;225;225;225" /></rect></mask>
+  <clipPath id="round"><rect width="960" height="600" rx="14"/></clipPath>
+</defs>
+<g clip-path="url(#round)">
+  <rect width="960" height="600" fill="url(#wall)"/>
+  <rect width="960" height="22" fill="#000" fill-opacity=".28"/>
+  <circle cx="18" cy="11" r="4" fill="#fff" fill-opacity=".85"/><rect x="34" y="8" width="44" height="6" rx="3" fill="#fff" fill-opacity=".8"/><rect x="88" y="8" width="26" height="6" rx="3" fill="#fff" fill-opacity=".5"/><rect x="122" y="8" width="26" height="6" rx="3" fill="#fff" fill-opacity=".5"/><rect x="880" y="8" width="62" height="6" rx="3" fill="#fff" fill-opacity=".6"/>
+
+  <g>
+    <rect x="150" y="52" width="660" height="440" rx="12" fill="#fdfcfa"/>
+    <path d="M150 64a12 12 0 0 1 12-12h636a12 12 0 0 1 12 12v20H150z" fill="#ebe8e2"/>
+    <circle cx="170" cy="68" r="5" fill="#ff5f57"/><circle cx="187" cy="68" r="5" fill="#febc2e"/><circle cx="204" cy="68" r="5" fill="#28c840"/>
+    <text x="300" y="196" font-size="30" font-weight="700" fill="#1b1a18" letter-spacing="-.6">Weekly signups</text>
+    <text x="300" y="222" font-size="14" fill="#6b6862">Up 38% since launch</text>
+    <g fill="url(#chart)">
+      <rect x="300" y="318" width="34" height="42" rx="4"/><rect x="346" y="300" width="34" height="60" rx="4"/><rect x="392" y="306" width="34" height="54" rx="4"/><rect x="438" y="280" width="34" height="80" rx="4"/><rect x="484" y="268" width="34" height="92" rx="4"/><rect x="530" y="250" width="34" height="110" rx="4"/><rect x="576" y="240" width="34" height="120" rx="4"/><rect x="622" y="236" width="34" height="124" rx="4"/>
+    </g>
+    <g fill="#e4e1db"><rect x="180" y="110" width="90" height="10" rx="5"/><rect x="180" y="134" width="70" height="10" rx="5"/><rect x="180" y="158" width="82" height="10" rx="5"/><rect x="180" y="400" width="600" height="10" rx="5"/><rect x="180" y="424" width="520" height="10" rx="5"/><rect x="180" y="448" width="560" height="10" rx="5"/><rect x="690" y="110" width="90" height="26" rx="13"/></g>
+  </g>
+
+  <g><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="1;1;1;1;1;1;0;0;1" /><rect width="960" height="600" fill="#000" fill-opacity=".5" mask="url(#hole)"/></g>
+  <rect fill="none" stroke="#fff" stroke-width="1.5" x="280" y="152" width="400" height="225"><animate attributeName="x" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="280;280;345;345;345;345;280;280;280" /><animate attributeName="y" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="152;152;130;130;22;22;152;152;152" /><animate attributeName="width" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="400;400;270;270;270;270;400;400;400" /><animate attributeName="height" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="225;225;270;270;480;480;225;225;225" /><animate attributeName="stroke" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="#fff;#fff;#fff;#fff;#fff;#fff;#ff453a;#ff453a;#fff" calcMode="discrete"/><animate attributeName="stroke-width" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="1.5;1.5;1.5;1.5;1.5;1.5;2.5;2.5;1.5" /></rect>
+
+  <g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="1;1;0;0;0;0;0;0;1" /><rect x="385.0" y="122" width="190" height="22" rx="6" fill="#000" fill-opacity=".72"/><text x="480" y="137" text-anchor="middle" font-size="11.5" font-weight="500" fill="#fff">X / Twitter · 1600 × 900 px</text></g>
+  <g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="0;0;1;1;0;0;0;0;0" /><rect x="367.0" y="100" width="226" height="22" rx="6" fill="#000" fill-opacity=".72"/><text x="480" y="115" text-anchor="middle" font-size="11.5" font-weight="500" fill="#fff">Instagram Square · 1080 × 1080 px</text></g>
+  <g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="0;0;0;0;1;1;0;0;0" /><rect x="370.0" y="30" width="220" height="22" rx="6" fill="#000" fill-opacity=".72"/><text x="480" y="45" text-anchor="middle" font-size="11.5" font-weight="500" fill="#fff">Instagram Story · 1080 × 1920 px</text></g>
+
+  <g transform="translate(-57 0)"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="1;1;1;1;1;1;0;0;1" />
+    <rect x="262" y="524" width="550" height="58" rx="18" fill="#1c1c1f" fill-opacity=".86" stroke="#fff" stroke-opacity=".16"/>
+    <circle cx="286" cy="553" r="9" fill="#fff" fill-opacity=".3"/><path d="M282.5 549.5l7 7m0-7l-7 7" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+    <rect x="305" y="536" width="1" height="34" fill="#fff" fill-opacity=".2"/>
+    <rect x="314" y="533" width="28" height="40" rx="8" fill="#fff" fill-opacity=".22"/>
+    <rect x="320" y="547" width="16" height="12" rx="2.5" fill="none" stroke="#fff" stroke-width="1.4"/><circle cx="328" cy="553" r="3" fill="none" stroke="#fff" stroke-width="1.3"/>
+    <rect x="347" y="548" width="12" height="10" rx="2.5" fill="none" stroke="#fff" stroke-width="1.4"/><path d="M360 551.5l5-3v9l-5-3z" fill="#fff"/>
+    <rect x="371" y="536" width="1" height="34" fill="#fff" fill-opacity=".2"/>
+    <rect x="378" y="531" width="46" height="46" rx="9" fill="#fff" fill-opacity=".22"><animate attributeName="x" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="378;378;428;428;528;528;378;378;378" /></rect>
+    <rect x="390.0" y="541.8" width="22.0" height="12.4" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/><text x="401" y="571" text-anchor="middle" font-size="8.5" font-weight="500" fill="#fff">X</text><rect x="440.0" y="537.0" width="22.0" height="22.0" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/><text x="451" y="571" text-anchor="middle" font-size="8.5" font-weight="500" fill="#fff">Square</text><rect x="493.0" y="538.0" width="16.0" height="20.0" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/><text x="501" y="571" text-anchor="middle" font-size="8.5" font-weight="500" fill="#fff">Portrait</text><rect x="545.4" y="538.0" width="11.2" height="20.0" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/><text x="551" y="571" text-anchor="middle" font-size="8.5" font-weight="500" fill="#fff">Story</text><rect x="590.0" y="542.2" width="22.0" height="11.5" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/><text x="601" y="571" text-anchor="middle" font-size="8.5" font-weight="500" fill="#fff">LinkedIn</text><rect x="640.0" y="542.2" width="22.0" height="11.6" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/><text x="651" y="571" text-anchor="middle" font-size="8.5" font-weight="500" fill="#fff">Link</text>
+  </g>
+  <g transform="translate(-57 0)"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="1;1;1;1;1;1;0;0;1" />
+    <rect x="716" y="537" width="84" height="32" rx="16" fill="#fff"/><text x="758" y="557.5" text-anchor="middle" font-size="13" font-weight="600" fill="#000">Capture</text>
+  </g>
+
+  <g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.23;0.25;0.48;0.5;0.73;0.75;0.98;1" values="0;0;0;0;0;0;1;1;0" />
+    <rect x="422" y="389" width="116" height="32" rx="16" fill="#000" fill-opacity=".82"/>
+    <circle cx="442" cy="405" r="7" fill="#ff453a"><animate attributeName="opacity" values="1;.25;1" dur="1.2s" repeatCount="indefinite"/></circle>
+    <rect x="439" y="402" width="6" height="6" rx="1" fill="#fff"/>
+    <text x="456" y="409.5" font-size="13" font-weight="600" fill="#fff">Stop</text>
+    <text x="524" y="409.5" text-anchor="end" font-size="13" font-weight="500" fill="#fff" fill-opacity=".7">0:02</text>
+    <rect x="290" y="162" width="150" height="22" rx="6" fill="#000" fill-opacity=".72"/>
+    <text x="365" y="177" text-anchor="middle" font-size="11.5" font-weight="500" fill="#fff">MP4 · system audio + mic</text>
+  </g>
+</g>
+</svg>

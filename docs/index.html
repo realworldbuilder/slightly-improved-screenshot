@@ -27,6 +27,7 @@
   h1 em { font-style: normal; color: var(--accent); }
   .lede { font-size: 20px; color: var(--muted); margin: 0 0 36px; max-width: 34em; }
   h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 52px 0 14px; font-weight: 600; }
+  .demo { display: block; width: 100%; height: auto; border-radius: 14px; margin: 0 0 28px; box-shadow: 0 12px 40px rgba(0,0,0,.18); }
   .install {
     display: flex; align-items: center; gap: 10px;
     background: var(--code-bg); color: var(--code-fg);
@@ -62,6 +63,8 @@
 <main>
   <h1>Screenshot, <em>slightly improved.</em></h1>
   <p class="lede">A macOS menu bar utility that works like the built-in Screenshot tool, except every screenshot and screen recording comes out at the exact pixel size the platform you are posting to expects.</p>
+
+  <img class="demo" src="demo.svg" width="960" height="600" alt="The capture frame switching between X, Instagram Square and Instagram Story sizes, then recording video with a Stop button.">
 
   <div class="install">
     <code id="cmd">curl -fsSL https://realworldbuilder.github.io/slightly-improved-screenshot/install.sh | bash</code>
