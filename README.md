@@ -50,7 +50,7 @@ Switch the toolbar to video and press **Record**. The frame is recorded at the p
 pixel size as an H.264 MP4 at up to 60 fps (odd dimensions are rounded up to even, so
 LinkedIn records at 1200 × 628). A red outline marks the recorded region and is not part
 of the recording. Stop with the **Stop** button
-beside the region, the hotkey, or the menu bar item, which shows the elapsed time.
+beside the region (it shows the elapsed time), the hotkey, or the menu bar item.
 
 - **Record System Audio** captures what the Mac is playing.
 - **Microphone** adds any connected input. System audio and the microphone are mixed
